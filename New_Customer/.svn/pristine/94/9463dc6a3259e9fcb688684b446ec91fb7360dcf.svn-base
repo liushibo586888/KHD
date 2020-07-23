@@ -1,0 +1,124 @@
+<template>
+	<view>
+		<!-- #ifdef MP-WEIXIN -->
+
+		<view>
+			<view class="header"><image mode="widthFix" src="../../static/logo.png"></image></view>
+			<view class="content">
+				<view>
+					<text class="LogoTitle">塑青春科技祛痘</text>
+					提示您:
+				</view>
+				<text>如果是新客,请先到我们门店体验我们的服务</text>
+				<text>如果已是老客手机号已更换,请联系护理老师更换手机号</text>
+			</view>
+			<view class="listview"> 
+				 <navigator hover-class="none"   class="xiaViewChild" url="../map/map">
+					<image class="mineImg" src="../../static/tabbarImg/chain.png"></image>
+					<text>门店详情</text>
+					<image class="mineImg" src="../../static/tabbarImg/rArrow.png"></image>
+				 </navigator>
+				  <navigator hover-class="none" open-type='reLaunch' class="reauthorization" url="../login/login">
+						<image class="mineImg" src="../../static/tabbarImg/again.png"></image>
+						<text>重新授权</text>
+						<image class="mineImg" src="../../static/tabbarImg/rArrow.png"></image>
+				  </navigator> 
+			 </view> 
+		</view>
+
+		 
+		<!-- #endif -->
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {};
+	},
+	onLoad() {},
+	methods: {}
+};
+</script>
+
+<style scoped>
+.content .LogoTitle {
+	display: inline;
+	font-size: 40upx;
+	color: #83cbac;
+	margin-right: 30upx;
+}
+.content .Step {
+	color: #83cbac;
+}
+.header {
+	margin: 90rpx 50rpx;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	width: 650rpx;
+	height: 300rpx;
+	line-height: 450rpx;
+}
+
+.content {
+	margin: 0 50rpx 90rpx 50rpx;
+}
+
+.content text {
+	display: block;
+	color: #9d9d9d;
+	margin-top: 40rpx;
+}
+
+.bottom {
+	border-radius: 80rpx;
+	margin: 70rpx 50rpx;
+	font-size: 35rpx;
+	background-color: #83cbac;
+}
+.mineImg {
+	width: 60upx;
+	height: 60upx;
+}
+.xiaViewChild {
+	display: flex;
+	align-items: center;
+	padding: 30upx 0;
+	border-top: 1px solid #f3f3f3;
+	border-bottom: 1px solid #f3f3f3;
+}
+
+.xiaViewChild text {
+	font-size: 38upx;
+	flex: 1;
+}
+
+.xiaViewChild image {
+	width: 66upx;
+	height: 66upx;
+	margin-right: 30upx;
+}
+.listview{
+	padding: 0 30upx;
+}
+
+.reauthorization {
+	display: flex;
+	align-items: center;
+	padding: 30upx 0;
+	/* border-top: 1px solid #f3f3f3; */
+	border-bottom: 1px solid #f3f3f3;
+}
+.reauthorization text {
+	font-size: 38upx;
+	flex: 1;
+}
+
+.reauthorization image {
+	width: 66upx;
+	height: 66upx;
+	margin-right: 30upx;
+}
+</style>

@@ -1,0 +1,33 @@
+
+.content .LogoTitle.data-v-f5310918 {
+	display: inline;
+	font-size: 40rpx;
+	color: #77A14B;
+	margin-right: 30rpx;
+}
+.content .Step.data-v-f5310918 {
+	color: #77A14B;
+}
+.header.data-v-f5310918 {
+	margin: 90rpx 50rpx;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	width: 650rpx;
+	height: 300rpx;
+	line-height: 450rpx;
+}
+.content.data-v-f5310918 {
+	margin: 0 50rpx 90rpx 50rpx;
+}
+.content text.data-v-f5310918 {
+	display: block;
+	color: #9d9d9d;
+	margin-top: 40rpx;
+}
+.bottom.data-v-f5310918 {
+	border-radius: 80rpx;
+	margin: 70rpx 50rpx;
+	font-size: 35rpx;
+	background-color: #77A14B;
+}
+

@@ -1,0 +1,26 @@
+
+.w100 {
+	width: 100%;
+}
+.margin-top-30 {
+	margin-top: 60rpx;
+}
+.margin-top-15 {
+	margin-top: 30rpx;
+}
+.padding {
+	padding: 15rpx;
+}
+.text-large {
+	font-size: 30rpx;
+}
+.text-Bcyan {
+	color: #64a488;
+}
+.bg-cyan {
+	background-color: #83cbac;
+}
+.text-white {
+	color: white;
+}
+

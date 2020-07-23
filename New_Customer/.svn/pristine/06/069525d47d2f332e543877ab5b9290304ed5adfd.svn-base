@@ -1,0 +1,81 @@
+<template>
+	<view>
+		<!-- #ifdef MP-WEIXIN -->
+
+		<view>
+			<view class="header"><image mode="widthFix" src="../../static/logo.png"></image></view>
+			<view class="content">
+				<view>
+					<text class="LogoTitle">塑青春科技祛痘</text>
+					提示您:
+				</view>
+				<text>如果是新客,请先到我们门店体验我们的服务</text>
+				<text>如果已是老客手机号已更换,请联系护理老师更换手机号</text>
+			</view>
+			<button
+				hover-class="none"
+				:disabled="btnDisab"
+				class="bottom"
+				type="primary"
+				open-type="getPhoneNumber"
+				withCredentials="true"
+				lang="zh_CN"
+				@getphonenumber="getPhoneNumber"
+			>
+				授权手机号
+			</button>
+		</view>
+
+		 
+		<!-- #endif -->
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {};
+	},
+	onLoad() {},
+	methods: {}
+};
+</script>
+
+<style scoped>
+.content .LogoTitle {
+	display: inline;
+	font-size: 40upx;
+	color: #83cbac;
+	margin-right: 30upx;
+}
+.content .Step {
+	color: #83cbac;
+}
+.header {
+	margin: 90rpx 50rpx;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	width: 650rpx;
+	height: 300rpx;
+	line-height: 450rpx;
+}
+
+.content {
+	margin: 0 50rpx 90rpx 50rpx;
+}
+
+.content text {
+	display: block;
+	color: #9d9d9d;
+	margin-top: 40rpx;
+}
+
+.bottom {
+	border-radius: 80rpx;
+	margin: 70rpx 50rpx;
+	font-size: 35rpx;
+	background-color: #83cbac;
+}
+</style>

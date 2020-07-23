@@ -1,0 +1,48 @@
+
+.hideModel {
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 0;
+}
+.MapBottom {
+	background-color: white;
+	position: fixed;
+	bottom: 0;
+	width: 100vw;
+	height: 20vh;
+	padding: 20rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+.MapBottomL {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-justify-content: space-around;
+	        justify-content: space-around;
+	height: 100%;
+}
+.MapBottomR,
+.MapBottomR image {
+	width: 60rpx;
+	height: 60rpx;
+	margin-right: 15rpx;
+}
+.calloutDetailsTitle {
+	color: #83cbac;
+	font-size: 40rpx;
+}
+

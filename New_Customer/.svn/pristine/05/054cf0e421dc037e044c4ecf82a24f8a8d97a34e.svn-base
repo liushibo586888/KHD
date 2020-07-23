@@ -1,0 +1,123 @@
+<template>
+	<view>
+		<view class="box">
+			<view style="font-weight: bold;font-size: 35upx;">{{ month }} 月 {{ year }}</view>
+			<scroll-view scroll-x="true">
+				<block v-for="(item, index) in dayList" :key="index">
+					<view class="dayTitle" :class="current == index ? 'select' : ''" @click="timeSelectd(index)">
+						<view>{{ item.day }}</view>
+						<view v-if="index == 0" style="font-size: 25upx;">今天</view>
+						<view v-else style="font-size: 25upx;">星期{{ item.week }}</view>
+					</view>
+				</block>
+			</scroll-view>
+			<view class="timeItem">
+				<block v-for="(item, index) in timeList" :key="index">
+					<view class="timechild" :class="tabIndex == index ? 'tabselected' : ''" @click="tabClick(index)">{{ item }}</view>
+				</block>
+			</view>
+		</view>
+		<view class="btn"><button type="default" :disabled="tabIndex == -1 ? true : false" :class="tabIndex == -1 ? '' : 'notstop'" @click="submitBtn">确定</button></view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+import common from '../../common/common.js';
+export default {
+	data() {
+		return {
+			isShow: false,
+			current: 0,
+			dayList: [],
+			month: new Date().getMonth() + 1,
+			year: new Date().getFullYear(),
+			tabIndex: -1,
+			timeList: ['13:00', '14:00', '15:00', '14:00'],
+			nowDate: common.GetNowTime(new Date()),
+			xzTime: ''
+		};
+	},
+	onLoad() {
+		this.dayList = common.weekDate().dayList;
+	},
+	methods: {
+		// 日期选择
+		timeSelectd(index) {
+			this.current = index;
+			let date = this.dayList[index].year + '-' + this.dayList[index].month + '-' + this.dayList[index].day;
+			date = common.GetNowTime(new Date(date));
+			this.month = this.dayList[index].month;
+			this.tabIndex = -1;
+			this.nowDate = date;
+		},
+		// 时间段选择
+		tabClick(index) {
+			this.tabIndex = index;
+			this.xzTime = this.timeList[index];
+		},
+		// 确定按钮
+		submitBtn() {
+			Vue.prototype.$selectDate = this.nowDate;
+			Vue.prototype.$selectTime = this.xzTime;
+			uni.switchTab({
+				url: '../index/index'
+			});
+		}
+	}
+};
+</script>
+
+<style scoped>
+.box {
+	padding: 30upx;
+}
+scroll-view {
+	padding: 20upx 0;
+	width: 100%;
+	white-space: nowrap;
+}
+.dayTitle {
+	width: 120upx;
+	height: 120upx;
+	border-radius: 120upx;
+	margin-left: 20upx;
+	text-align: center;
+	display: inline-block;
+	padding-top: 20upx;
+}
+.select {
+	color: #ffffff;
+	background-color: #88c36a;
+}
+.timeItem {
+	display: flex;
+	flex-wrap: wrap;
+}
+.timechild {
+	padding: 20upx 30upx;
+	background-color: #dedede;
+	color: #999999;
+	border-radius: 5upx;
+	margin: 15upx;
+}
+.tabselected {
+	color: #ffffff;
+	/* font-weight: bold; */
+	background-color: #88c36a;
+}
+.btn {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+}
+.notstop {
+	background-color: #88c36a;
+	color: #ffffff;
+}
+button {
+	font-weight: 550;
+}
+</style>

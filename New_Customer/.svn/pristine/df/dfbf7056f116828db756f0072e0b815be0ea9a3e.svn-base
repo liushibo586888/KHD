@@ -1,0 +1,277 @@
+<template>
+	<view>
+		<view class="NoData" v-if="dataList.length <= 0">无执行数据</view>
+		<scroll-view scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in dataList" :key="index">
+				<view class="mdListBox">
+					<view>时&nbsp;间: {{ timeFormat(item.ExtDate) }}</view>
+					<view>
+						<text>门&nbsp;&nbsp;&nbsp;店:</text>
+						<text>{{ item.StoreName }}</text>
+					</view>
+					<view>
+						<text>护理师:</text>
+						<text>{{ item.BeauticianName }}</text>
+					</view>
+					<view>
+						<text>项目类别:</text>
+						<text>{{ item.ItemCategoryName }}</text>
+					</view>
+					<view>
+						<text>项目名称:</text>
+						<text>{{ item.ItemName }}</text>
+					</view>
+					<view v-if="item.ExecuteTime != null">
+						<text>护理时间:</text>
+						<text>{{ item.ExecuteTime }}分钟</text>
+					</view>
+					<view v-if="item.Remark != null">
+						<text>备&nbsp;&nbsp;&nbsp;注:</text>
+						<text>{{ item.Remark }}</text>
+					</view>
+					<view v-if="item.CustomerImg" class="mt">
+						<scroll-view scroll-x class="ws">
+							<block v-for="(i, idx) in item.CustomerImg" :key="idx">
+								<image @click="preview(i,item.CustomerImg)" mode="aspectFill" class="images" :src="i"></image>
+							</block>
+						</scroll-view>
+					</view>
+					<view class="checkBtn">
+						<button
+							:class="item.IsSystemExcute ? 'checked' : 'checkOrder'"
+							:disabled="item.IsSystemExcute ? true : false"
+							type="button"
+							@click="checkOrder(item.ID, index)"
+						>
+							{{ item.IsSystemExcute ? '已确认' : '确认' }}
+						</button>
+
+						<button class="checkOrder" @click="evaluate(index)" type="button">{{ item.EvaluateStatus == 0 ? '评价' : '已评价' }}</button>
+					</view>
+				</view>
+			</block>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0,
+			Pagesize: 10,
+			dataList: null,
+			imgList: []
+		};
+	},
+	created() {
+		this.height = this.getWindowHeight() + 'px';
+		this.getList(1, this.Pagesize);
+		// console.log(common.GetNowTime(new Date()))
+		// console.log()
+	},
+	onShow() {
+		uni.$once('change', res => {
+			this.dataList[res.index].EvaluateStatus = 1;
+		});
+	},
+	onLoad() {
+		let cust = uni.getStorageSync('customer');
+		if (cust == null || cust.data == undefined || cust.data.CustomerID == null) {
+			uni.reLaunch({
+				url: '../login/login'
+			});
+		}
+	},
+	methods: {
+		evaluate(i) {
+			// console.log(id);
+			uni.setStorageSync('check', {
+				index: i,
+				id: this.dataList[i].ID,
+				name: this.dataList[i].BeauticianName,
+				time: this.dataList[i].ExtDate,
+				eN: this.dataList[i].SceneEmployeeName,
+				ES: this.dataList[i].EvaluateStatus,
+				StoreID: this.dataList[i].StoreID,
+				BTID: this.dataList[i].BeauticianID
+			});
+
+			uni.navigateTo({
+				url: '../evaluate/evaluate'
+			});
+		},
+		checkOrder(id, index) {
+			let url = 'NewClient/CustomerConfirmItemExcute';
+			let data = {
+				CustomerID: uni.getStorageSync('customer').data.CustomerID,
+				isSystemExcute: true,
+				listExcuteID: id
+			};
+			uni.showLoading({
+				title: '加载中',
+				mask: true
+			});
+			this.dataList[index].IsSystemExcute = true;
+			api.httpRequestPost(url, data).then(res => {
+				// console.log(res.data, id, data);
+				if (res.data.error_code == 'Success') {
+					uni.hideLoading();
+					uni.showToast({
+						title: '成功',
+						duration: 1000
+					});
+				} else {
+					uni.showToast({
+						title: res.data.error_message,
+						duration: 1000
+					});
+				}
+			});
+		},
+		timeFormat(time) {
+			if (time) {
+				let arrTime = time.split(/[-T.]/);
+				let arrT2 = arrTime[3].split(':');
+				// console.log(arrTime, arrT2);
+				return arrTime[0] + '年' + arrTime[1] + '月' + arrTime[2] + '日' + arrT2[0] + ':' + arrT2[1];
+			}
+		},
+		getList(page, size) {
+			let url = 'NewClient/GetExcuteRecord';
+			let data = {
+				CustomerID: uni.getStorageSync('customer').data.CustomerID,
+				page,
+				size
+			};
+
+			uni.showLoading({
+				title: '加载中',
+				mask: true
+			});
+			api.httpRequestGet(url, data).then(res => {
+				if (res.data.error_code == 'Success') {
+					let jkdata = res.data.data;
+					this.ImgPath(jkdata.list);
+					if (page > 1) {
+						var list = this.dataList;
+						list = list.concat(jkdata.list);
+					} else {
+						var list = [];
+						list = jkdata.list;
+					}
+					this.dataList = list;
+					this.totalPage = jkdata.totalPage;
+					uni.hideLoading();
+				} else {
+					console.error(res.data);
+				}
+			});
+		},
+		ImgPath(e) {
+			return e.forEach(v => {
+				var c = [];
+				if (v.CustomerImg) {
+					let d = v.CustomerImg.split(/[,]/);
+					d.forEach((a, b) => {
+						let g = v.PreImg + '../' + a; 
+						c.push(g);
+						this.imgList.push(g);
+					});
+					v.CustomerImg = c; 
+				}
+			});
+		},
+		preview(e,item) { 
+			let curr = e;
+			let imgs = item;
+			uni.previewImage({
+				current: curr, // 当前显示图片的http链接
+				urls: imgs // 需要预览的图片http链接列表
+			});
+		},
+		// 下拉加载
+		scrolltolower() {
+			this.PageIndex++;
+			if (this.PageIndex <= this.totalPage) {
+				this.getList(this.PageIndex, this.Pagesize);
+			} else {
+				uni.showToast({
+					title: '暂无更多数据',
+					duration: 1000
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+.mt {
+	margin: 20rpx 0;
+}
+.ws {
+	white-space: nowrap;
+}
+.images {
+	border: 1px solid;
+	width: 150upx;
+	height: 150upx;
+	margin-right: 16rpx;
+}
+.checkBtn {
+	display: flex;
+}
+
+.NoData {
+	font-size: 40rpx;
+	margin-top: 280rpx;
+	color: #a1a1a1;
+	padding-left: 285rpx;
+}
+
+.checkBtn button {
+	line-height: 2;
+	margin: 40upx 4upx 20upx 4upx;
+	flex: 1;
+	border: 1px solid;
+	border-radius: 20upx;
+	background: none;
+}
+
+.checked {
+	color: #b2bbbe;
+}
+
+.checkOrder {
+	color: #83cbac;
+}
+
+.mdListBox > view {
+	display: flex;
+}
+
+.mdListBox > view > text {
+	flex: 1;
+}
+
+.mdListBox > view > text:nth-child(2) {
+	flex: 2;
+}
+
+.mdListBox {
+	padding: 30upx;
+	border-bottom: 1px solid #bebebe;
+	color: #b2b2b2;
+}
+
+.mdListBox view:nth-of-type(1) {
+	font-size: 40upx;
+	color: #83cbac;
+	margin-bottom: 10upx;
+	/* font-weight: bold; */
+}
+</style>

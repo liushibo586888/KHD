@@ -1,0 +1,228 @@
+//字符串拼接
+function strFormat(str) {
+	return str < 10 ? `0${str}` : str
+}
+ 
+
+//时间戳转日期
+export function timeStamp(time) {
+	const dates = new Date(time)
+	const year = dates.getFullYear()
+	const month = dates.getMonth() + 1
+	const date = dates.getDate()
+	const day = dates.getDay()
+	const hour = dates.getHours()
+	const min = dates.getMinutes()
+	const days = ['日', '一', '二', '三', '四', '五', '六']
+	return {
+		allDate: `${year}/${strFormat(month)}/${strFormat(date)}`,
+		date: `${strFormat(month)}-${strFormat(date)}`, //返回的日期 07-01
+		day: `星期${days[day]}`, //返回的礼拜天数  星期一
+		hour: strFormat(hour) + ':' + strFormat(min) //返回的时钟 08:00
+	}
+}
+//获取最近7天的日期和礼拜天数
+ function dateData() {
+	const time = []
+	const date = new Date()
+	const now = date.getTime() //获取当前日期的时间戳
+	let timeStr = 3600 * 24 * 1000 //一天的时间戳
+	for (let i = 0; i < 7; i++) {
+		const timeObj = {}
+		timeObj.date = timeStamp(now + timeStr * i).date //保存日期
+		timeObj.timeStamp = now + timeStr * i //保存时间戳
+		if (i == 0) {
+			timeObj.week = '今天'
+		} else if (i == 1) {
+			timeObj.week = '明天'
+		} else if (i == 2) {
+			timeObj.week = '后天'
+		} else {
+			timeObj.week = timeStamp(now + timeStr * i).day
+		}
+		time.push(timeObj)
+	}
+	return time
+}
+//时间数组
+ function timeData(startTime = '09:00', endTime = '22:30', timeInterval = 0.5) {
+	const time = []
+	const date = timeStamp(Date.now()).allDate
+	const startDate = `${date} ${startTime}`
+	const endDate = `${date} ${endTime}`
+	const startTimeStamp = new Date(startDate).getTime()
+	const endTimeStamp = new Date(endDate).getTime()
+	const timeStr = 3600 * 1000 * timeInterval
+	//console.log(startTimeStamp)
+	for (let i = startTimeStamp; i <= endTimeStamp; i = i + timeStr) {
+		const timeObj = {}
+		timeObj.time = timeStamp(i).hour
+    timeObj.Checked = false
+    timeObj.start=0 //是否已被预约 
+    timeObj.isSelect=false //是否是有效的时间
+		time.push(timeObj)
+	}
+	// console.log(JSON.stringify(time))
+	return time
+}
+ 
+//获取当前时间段的年月日
+  function  getNowFullYear()
+{
+  var n = new Date();
+  const year = n.getFullYear();
+  const month = n.getMonth() + 1
+  const date = n.getDate()
+  return `${year}-${strFormat(month)}-${strFormat(date)}`
+}
+//获取月日
+export function getShortDate()
+{
+  var n = new Date(); 
+  const month = n.getMonth() + 1
+  const date = n.getDate()
+  return `${strFormat(month)}-${strFormat(date)}` 
+}
+//日期是否相等
+function dateIsEqual(day1,day2)
+{
+   if(day1==day2){
+     return true;
+   }
+   else
+   {
+     return false;
+   }
+}
+//获取当短时间的差
+function shortDataDiff(start, end, minutes) 
+{
+   var s = start.split(':');
+   var e = end.split(':');
+  var kai = parseInt(s[0]*60) +parseInt(s[1]);
+   var stop = parseInt(e[0]*60) +parseInt(e[1]);
+  var m = stop - kai;
+  if (m >= minutes){
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+  
+} 
+export function compareDate(d1, d2) { 
+   if(new Date(d1.replace(/-/g, "\/")) <= (new Date(d2.replace(/-/g, "\/"))))
+   {
+     return true
+   }
+   else
+   {
+     return false
+   }
+}
+//获取当前时间的分钟
+function getNowMinutes()
+{
+  var n = new Date(); 
+  return  n.getHours() + ':' + n.getMinutes() 
+}
+//完整的计算时间方式
+export function longTimeDiff()
+{
+ var date1 = '2020-04-13 09:00:00';  //开始时间  
+  var date2 = new Date();    //结束时间  
+  var date3 = date2.getTime() - new Date(date1).getTime();   //时间差的毫秒数  
+ 
+  //计算出相差天数  
+  var days = Math.floor(date3 / (24 * 3600 * 1000))
+
+  //计算出小时数  
+
+  var leave1 = date3 % (24 * 3600 * 1000)    //计算天数后剩余的毫秒数  
+  var hours = Math.floor(leave1 / (3600 * 1000))
+  //计算相差分钟数  
+  var leave2 = leave1 % (3600 * 1000)        //计算小时数后剩余的毫秒数  
+  var minutes = Math.floor(leave2 / (60 * 1000))
+  //计算相差秒数  
+  var leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数  
+  var seconds = Math.round(leave3 / 1000)
+  console.log(" 相差 " + days + "天 " + hours + "小时 " + minutes + " 分钟" + seconds + " 秒"); 
+}
+
+// export const timeData = [{
+//                         time: '08:00',
+//                         disable: 1
+//                     }, {
+//                         time: '08:30',
+//                         disable: 1
+//                     }, {
+//                         time: '09:00',
+//                         disable: 1
+//                     }, {
+//                         time: '09:30',
+//                         disable: 1
+//                     }, {
+//                         time: '10:00',
+//                         disable: 1
+//                     }, {
+//                         time: '10:30',
+//                         disable: 1
+//                     }, {
+//                         time: '11:00',
+//                         disable: 1
+//                     }, {
+//                         time: '11:30',
+//                         disable: 1
+//                     }, {
+//                         time: '12:00',
+//                         disable: 1
+//                     }, {
+//                         time: '12:30',
+//                         disable: 1
+//                     }, {
+//                         time: '13:00',
+//                         disable: 1
+//                     }, {
+//                         time: '13:30',
+//                         disable: 1
+//                     }, {
+//                         time: '14:00',
+//                         disable: 1
+//                     }, {
+//                         time: '14:30',
+//                         disable: 1
+//                     }, {
+//                         time: '15:00',
+//                         disable: 1
+//                     }, {
+//                         time: '15:30',
+//                         disable: 1
+//                     }, {
+//                         time: '16:00',
+//                         disable: 1
+//                     }, {
+//                         time: '16:30',
+//                         disable: 1
+//                     }, {
+//                         time: '17:00',
+//                         disable: 1
+//                     }, {
+//                         time: '17:30',
+//                         disable: 1
+//                     }, {
+//                         time: '18:00',
+//                         disable: 1
+//                     }, {
+//                         time: '18:30',
+//                         disable: 1
+//                     } ]
+
+module.exports = {
+	timeData,
+	dateData,
+	getNowFullYear,
+	dateIsEqual,
+	getNowMinutes,
+	shortDataDiff
+} 

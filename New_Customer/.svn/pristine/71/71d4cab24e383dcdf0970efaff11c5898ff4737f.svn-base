@@ -1,0 +1,39 @@
+
+.flex.data-v-4432318a {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+.spb.data-v-4432318a {
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+}
+.mdListBoxChild1.data-v-4432318a {
+	font-size: 50rpx;
+	color: #83cbac;
+}
+.mdListBoxChild2.data-v-4432318a {
+	margin-top: 10rpx;
+	color: #b2b2b2;
+}
+.flex image.data-v-4432318a {
+	margin-right: 20rpx;
+}
+.storeLogo.data-v-4432318a {
+	width: 50rpx;
+}
+.StoreNull.data-v-4432318a {
+	text-align: center;
+	font-size: 60rpx;
+	margin-top: 60rpx;
+	color: #a1a1a1;
+}
+.mdListBox.data-v-4432318a {
+	padding: 30rpx;
+	border-bottom: 1px solid #bebebe;
+}
+

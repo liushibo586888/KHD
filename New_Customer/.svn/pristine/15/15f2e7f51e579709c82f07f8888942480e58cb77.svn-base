@@ -1,0 +1,49 @@
+
+.checkBtn.data-v-24afa33c {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+}
+.checkBtn button.data-v-24afa33c {
+	line-height: 2;
+	margin: 40rpx 4rpx 20rpx 4rpx;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	border: 1px solid;
+	border-radius: 20rpx;
+	background: none;
+}
+.checked.data-v-24afa33c {
+	color: #b2bbbe;
+}
+.checkOrder.data-v-24afa33c {
+	color: #83cbac;
+}
+.mdListBox>view.data-v-24afa33c {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+}
+.mdListBox>view>text.data-v-24afa33c {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+}
+.mdListBox>view>text.data-v-24afa33c:nth-child(2) {
+	-webkit-box-flex: 2;
+	-webkit-flex: 2;
+	        flex: 2;
+}
+.mdListBox.data-v-24afa33c {
+	padding: 30rpx;
+	border-bottom: 1px solid #bebebe;
+	color: #b2b2b2;
+}
+.mdListBox view.data-v-24afa33c:nth-of-type(1) {
+	font-size: 40rpx;
+	color: #83cbac;
+	margin-bottom: 10rpx;
+	/* font-weight: bold; */
+}
+

@@ -1,0 +1,89 @@
+<template>
+	<view>
+		<view class="desc" v-for="(item, index) in info" :key="index">
+			<view class="desc-title">{{ item.Title }}</view>
+			<view class="desc-body" v-for="(ite, ind) in info[index].models" :key="ind">
+				<view class="desc-title-item">
+					<text>项目名称：</text>
+					{{ ite.ProductName }}
+				</view>
+				<view class="desc-title-item">
+					<text>价格：</text>
+					{{ ite.Pirce }}
+				</view>
+				<view class="desc-title-item">
+					<text>分类名称：</text>
+					{{ ite.CategoryName }}
+				</view>
+				<view class="amount" v-for="(it, i) in info[index].models[ind].Details" :key="i">
+					<view class="desc-title-item">
+						<text>支付金额：</text>
+						{{ it.Amount }}
+					</view>
+					<view class="desc-title-item">
+						<text>经手人：</text>
+						{{ it.HandlebyName }}
+					</view>
+					<view class="desc-title-item">
+						<text>支付方式：</text>
+						{{ it.PayModelName }}
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			id: null,
+			info: {}
+		};
+	},
+	methods: {},
+	onLoad(e) {
+		// console.log(e.id);
+		api.httpRequestGet('NewClient/CustConsumptionDetails', {
+			// ConsumptionInfoID: e.id
+			ConsumptionInfoID: 'd6f2665b-40e0-417c-8bc1-46f50e5df608'
+		}).then(res => {
+			console.log(res.data.data);
+			this.info = res.data.data;
+		});
+	}
+};
+</script>
+
+<style>
+page {
+	background-color: #f5f5f5;
+}
+.amount {
+}
+.desc {
+	margin: 20upx;
+	background-color: white;
+	border-radius: 10upx;
+}
+.desc-title {
+	font-size: 50upx;
+	font-weight: bold;
+	border-bottom: 1px solid #bebebe;
+	margin: 0 30upx;
+	padding: 30upx 0;
+}
+.desc-body{
+	padding:20upx 0
+}
+.desc-title-item {
+	margin: 20upx 0;
+	text-indent: 32upx;
+	display: flex;
+}
+.desc-title-item text {
+	width: 220upx;
+}
+</style>

@@ -1,0 +1,88 @@
+<template>
+	<view>
+		<scroll-view scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in 3" :key="index">
+				<view class="mdListBox">
+					<view>项目名称</view>
+					<view>预约时间: 13:00</view>
+					<view>预约门店: 下沙和达店</view>
+				</view>
+			</block>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0
+		};
+	},
+	created() {
+		let that = this;
+		that.height = that.getWindowHeight() + 'px';
+	},
+	onLoad() {},
+	methods: {
+		getList(page = 1, size = 15) {
+			let url = 'Performance/GetPractitionerResults';
+			let data = {
+				employeeId: uni.getStorageSync('employeeId'),
+				PageIndex: page,
+				PageSize: size
+			};
+			uni.showLoading({
+				title: '加载中'
+			});
+			api.httpRequestGet(url, data).then(res => {
+				if (res.data.error_code == 'Success') {
+					let jkdata = res.data.data;
+					if (page > 1) {
+						var list = this.dataList;
+						list = list.concat(jkdata.list);
+					} else {
+						var list = [];
+						list = jkdata.list;
+					}
+					this.dataList = list;
+					this.totalPage = jkdata.totalPage;
+					uni.hideLoading();
+				}
+			});
+		},
+		// 下拉加载
+		scrolltolower() {
+			this.PageIndex++;
+			if (this.PageIndex <= this.totalPage) {
+				this.getList(this.PageIndex);
+			} else {
+				uni.showToast({
+					title: '暂无更多数据',
+					duration: 1000
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+.mdListBox {
+	padding: 30upx;
+	border-bottom: 1px solid #bebebe;
+	color: #b2b2b2;
+}
+.mdListBox view:nth-of-type(1) {
+	font-size: 50upx;
+	color: #83cbac;
+	/* font-weight: bold; */
+}
+.mdListBox view:nth-of-type(2) {
+	margin-top: 10upx;
+}
+</style>

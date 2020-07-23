@@ -1,0 +1,156 @@
+<template>
+	<view>
+		<view v-if="mdList.length <= 0 ? true : false" class="StoreNull">暂无门店</view>
+		<scroll-view v-else-if="mdList.length == 0 ? false : true" scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in mdList" :key="index">
+				<view class="mdListBox" @click="mdselect(index)">
+					<view class="flex spb">
+						<text class="mdListBoxChild1">{{ item.StoreName }}</text>
+						<view @click.stop="map(index)"><image class="storeLogo" mode="widthFix" src="../../static/tabbarImg/locate.png"></image></view>
+					</view>
+					<view class="flex mdListBoxChild2">
+						<image class="storeLogo" mode="widthFix" src="../../static/tabbarImg/store.png"></image>
+						<text>{{ item.Address }}</text>
+					</view>
+				</view>
+			</block>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0,
+			mdList: [],
+			StoreLatitude: 0,
+			StoreLongitude: 0
+		};
+	},
+	created() {
+		let that = this;
+		that.height = that.getWindowHeight() + 'px';
+		this.getList();
+	},
+	onLoad() {},
+	methods: {
+		map(index) {
+			let Stores = uni.getStorageSync('customer').data.Stores[index];
+			let longitude = Stores.LongItude;
+			let latitude = Stores.LatItude;
+			// let StoreId = Stores.StoreId;
+			let StoreName = Stores.StoreName;
+			let address = Stores.Address;
+
+			uni.getLocation({
+				type: 'wgs84',
+				success(res) {
+					// console.log('经度：' + res.longitude, '纬度：' + res.latitude);
+					uni.openLocation({
+						latitude,
+						longitude,
+						name: StoreName,
+						address
+					});
+				},
+				fail() {
+					uni.getSetting({
+						success(res) {
+							let statu = res.authSetting;
+
+							if (!statu['scope.userLocation']) {
+								uni.showModal({
+									title: '是否授权当前位置',
+									content: '需要获取您的地理位置，请确认授权，否则地图功能将无法使用',
+									success(tip) {
+										if (tip.confirm) {
+											uni.openSetting({
+												success(data) {
+													if (data.authSetting['scope.userLocation'] === true) {
+														uni.showToast({
+															title: '授权成功',
+															icon: 'success',
+															duration: 1000
+														});
+													} else {
+														uni.showToast({
+															title: '授权失败',
+															icon: 'success',
+															duration: 1000
+														});
+													}
+												}
+											});
+										}
+									}
+								});
+							}
+						},
+						fail() {
+							uni.showToast({
+								title: '调用授权窗口失败',
+								duration: 1000
+							});
+						}
+					});
+				}
+			});
+		},
+		// 选择门店
+		mdselect(index) {
+			Vue.prototype.$mdId = this.mdList[index].StoreId;
+			Vue.prototype.$mdName = this.mdList[index].StoreName;
+			uni.switchTab({
+				url: '../index/index'
+			});
+		},
+		// 获取门店列表
+		getList() {
+			let md = uni.getStorageSync('customer').data;
+			if (md != undefined) {
+				this.mdList = uni.getStorageSync('customer').data.Stores;
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+.flex {
+	display: flex;
+	align-items: center;
+}
+.spb {
+	justify-content: space-between;
+}
+.mdListBoxChild1 {
+	font-size: 50upx;
+	color: #83cbac;
+}
+.mdListBoxChild2 {
+	margin-top: 10upx;
+	color: #b2b2b2;
+}
+.flex image {
+	margin-right: 20upx;
+}
+.storeLogo {
+	width: 50upx;
+}
+.StoreNull {
+	text-align: center;
+	font-size: 40rpx;
+	margin-top: 280rpx;
+	color: #a1a1a1;
+}
+
+.mdListBox {
+	padding: 30upx;
+	border-bottom: 1px solid #bebebe;
+}
+</style>

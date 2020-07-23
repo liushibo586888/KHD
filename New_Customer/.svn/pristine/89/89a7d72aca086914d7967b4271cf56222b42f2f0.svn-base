@@ -1,0 +1,63 @@
+
+.box.data-v-dcf46636 {
+	padding: 30rpx;
+}
+scroll-view.data-v-dcf46636 {
+	padding: 20rpx 0;
+	width: 100%;
+	white-space: nowrap;
+}
+.dayTitle.data-v-dcf46636 {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 120rpx;
+	margin-left: 20rpx;
+	text-align: center;
+	display: inline-block;
+	padding-top: 20rpx;
+}
+.select.data-v-dcf46636 {
+	color: #ffffff;
+	background-color: #83cbac;
+}
+.timeItem.data-v-dcf46636 {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+}
+.timechild.data-v-dcf46636 {
+	padding: 20rpx 30rpx;
+	background-color: #dedede;
+	color: #999999;
+	border-radius: 5rpx;
+	margin: 15rpx;
+}
+.tabselected.data-v-dcf46636 {
+	color: #ffffff;
+	/* font-weight: bold; */
+	background-color: #83cbac;
+}
+.btn.data-v-dcf46636 {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+}
+.notstop.data-v-dcf46636 {
+	background-color: #83cbac;
+	color: #ffffff;
+}
+.StoreNull.data-v-dcf46636 {
+	text-align: center;
+	font-size: 60rpx;
+	margin-top: 60rpx;
+	color: #a1a1a1;
+}
+button.data-v-dcf46636 {
+	font-weight: 550;
+}
+

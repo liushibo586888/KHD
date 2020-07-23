@@ -1,0 +1,97 @@
+<template>
+	<view>
+		<scroll-view scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in mdList" :key="index">
+				<view class="mdListBox" @click="mdselect(index)">
+					<view>{{ item.name }}</view>
+					<view>{{ item.address }}</view>
+				</view>
+			</block>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue'
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0,
+			mdList: [{ id: '123', name: '下沙和达店', address: '下沙和达店下沙和达店' }, { id: '456', name: '滨江天街', address: '滨江天街滨江天街' }]
+		};
+	},
+	created() {
+		let that = this;
+		that.height = that.getWindowHeight() + 'px';
+	},
+	onLoad() {},
+	methods: {
+		// 选择门店
+		mdselect(index) {
+			Vue.prototype.$mdId = this.mdList[index].id;
+			Vue.prototype.$mdName = this.mdList[index].name;
+			uni.switchTab({
+				url: '../index/index'
+			});
+		},
+		// 获取门店列表
+		getList(page = 1, size = 15) {
+			let url = 'Performance/GetPractitionerResults';
+			let data = {
+				employeeId: uni.getStorageSync('employeeId'),
+				PageIndex: page,
+				PageSize: size
+			};
+			uni.showLoading({
+				title: '加载中'
+			});
+			api.httpRequestGet(url, data).then(res => {
+				if (res.data.error_code == 'Success') {
+					let jkdata = res.data.data;
+					if (page > 1) {
+						var list = this.dataList;
+						list = list.concat(jkdata.list);
+					} else {
+						var list = [];
+						list = jkdata.list;
+					}
+					this.dataList = list;
+					this.totalPage = jkdata.totalPage;
+					uni.hideLoading();
+				}
+			});
+		},
+		// 下拉加载
+		scrolltolower() {
+			this.PageIndex++;
+			if (this.PageIndex <= this.totalPage) {
+				this.getList(this.PageIndex);
+			} else {
+				uni.showToast({
+					title: '暂无更多数据',
+					duration: 1000
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+.mdListBox {
+	padding: 30upx;
+	border-bottom: 1px solid #bebebe;
+}
+.mdListBox view:nth-of-type(1) {
+	font-size: 50upx;
+	color: #83cbac;
+	/* font-weight: bold; */
+}
+.mdListBox view:nth-of-type(2) {
+	margin-top: 10upx;
+	color: #b2b2b2;
+}
+</style>

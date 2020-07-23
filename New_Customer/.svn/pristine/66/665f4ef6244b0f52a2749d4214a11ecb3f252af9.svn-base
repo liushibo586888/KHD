@@ -1,0 +1,162 @@
+<template>
+	<view>
+		<!-- #ifdef MP-WEIXIN -->
+		<view v-if="isCanUse">
+			<view>
+				<view class="header">
+					<image mode="widthFix" src="../../static/logo.png"></image>
+				</view>
+				<view class="content">
+					<view>
+						<text class="LogoTitle">塑青春科技祛痘</text>
+						申请获取以下授权
+					</view>
+					<text>第一步：获取您的信息(昵称，头像、地区等)</text>
+					<text class="Step">第二步：获取您手机号</text>
+				</view>
+				<button hover-class="none" :disabled="btnDisab" class="bottom" type="primary" open-type="getPhoneNumber"
+				 withCredentials="true" lang="zh_CN" @getphonenumber="getPhoneNumber">
+					授权手机号
+				</button>
+			</view>
+		</view>
+		<!-- <view class="content" style="color: #83cbac;font-weight: bold;font-size: 35upx;">说明：用户使用微信授权的方式登录,登录后可进行门店预约、查看预约信息等</view> -->
+		<!-- #endif -->
+	</view>
+</template>
+
+<script>
+	import Vue from 'vue';
+	import api from '../../common/http.js';
+	export default {
+		data() {
+			return {
+				btnDisab: false, //默认授权按钮启用
+				isCanUse: uni.getStorageSync('isCanUse') || true, //默认为true
+				numCode: '', //客户的授权码
+				purePhoneNumber: '', //没有区号的手机号
+				openid: '', //用户授权后获取的openid
+				session_key: '', //用户授权后获取的session_key
+				username: '' //用户昵称唯一的 作为缓存key
+			};
+		},
+		onLoad(option) {
+			this.openid = decodeURIComponent(option.openid);
+			this.session_key = decodeURIComponent(option.session_key);
+			this.username = decodeURIComponent(option.username);
+			// console.log(decodeURIComponent(option.openid))
+			// console.log(decodeURIComponent(option.session_key))
+		},
+		onShow() { 
+			uni.hideHomeButton();
+			 uni.hideShareMenu()
+		},
+		methods: {
+			//授权手机号
+			getPhoneNumber(e) {
+				this.btnDisab = true;
+				let detail = e.detail;
+				if (detail.errMsg == 'getPhoneNumber:ok') {
+					let url = 'NewClient/PhoneNumber';
+					let d = {
+						AesIV: detail.iv,
+						encryptedData: detail.encryptedData,
+						AesKey: this.session_key
+					};
+					api.httpRequestPost(url, d).then(res => {
+						let result = res.data;
+						if (res.errMsg == 'request:ok' && result.error_code == 'Success') {
+							// console.log(this.openid);
+							// console.log(JSON.parse(result.data).purePhoneNumber);
+							api.httpRequestGet('NewClient/CustomerPhoneNumber', {
+									openid: this.openid,
+									phone: JSON.parse(result.data).purePhoneNumber
+								})
+								.then(res => {
+									uni.setStorageSync('customer', res.data);
+									uni.showLoading({
+										title: '正在登录...',
+										mask: true
+									})
+									if (res.data.data.CustomerID != '' && res.data.data.CustomerID != null) {
+										Vue.prototype.$loginBol = 'true';
+										setTimeout(() => {
+											uni.switchTab({
+												url: '../mine/mine'
+											});
+										}, 2000);
+									} else {
+										setTimeout(() => {
+											uni.navigateTo({
+												url: '../space/space'
+											});
+										}, 2000);
+									}
+								})
+								.catch(err => {
+									console.log(err);
+								});
+						} else {
+							this.btnDisab = false;
+							//请求失败
+							uni.showToast({
+								title: '请求登录失败',
+								icon: 'none',
+								duration: 2000,
+								mask: true
+							});
+						}
+					});
+				} else {
+					this.btnDisab = false;
+					//授权失败提示
+					uni.showToast({
+						title: '授权登录失败',
+						icon: 'none',
+						duration: 2000,
+						mask: true
+					});
+				}
+			}
+		}
+	};
+</script>
+
+<style scoped>
+	.content .LogoTitle {
+		display: inline;
+		font-size: 40upx;
+		color: #83cbac;
+		margin-right: 30upx;
+	}
+
+	.content .Step {
+		color: #83cbac;
+	}
+
+	.header {
+		margin: 90rpx 50rpx;
+		border-bottom: 1px solid #ccc;
+		text-align: center;
+		width: 650rpx;
+		height: 300rpx;
+		line-height: 450rpx;
+	}
+
+	.content {
+		margin: 0 50rpx 90rpx 50rpx;
+	}
+
+	.content text {
+		display: block;
+		color: #9d9d9d;
+		margin-top: 40rpx;
+	}
+
+	.bottom {
+		border-radius: 80rpx;
+		margin: 70rpx 50rpx;
+		font-size: 35rpx;
+		background-color: #83cbac;
+	}
+</style>

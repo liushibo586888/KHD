@@ -1,0 +1,51 @@
+
+.mdListBox .flex1.data-v-7ebf8888 {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	text-align: left;
+}
+.StoreNull.data-v-7ebf8888 {
+	text-align: center;   
+	font-size: 40rpx;
+	margin-top: 280rpx;
+	color: #a1a1a1;
+}
+.rArrow.data-v-7ebf8888 {
+	width: 60rpx;
+	height: 60rpx;
+}
+image.data-v-7ebf8888 {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50rpx;
+}
+.mdListBox.data-v-7ebf8888 {
+	padding: 20rpx 50rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	font-size: 46rpx;
+	border-bottom: 1px solid #b2b2b2;
+}
+.mdListBox view.data-v-7ebf8888 {
+	width: 25%;
+	text-align: center;
+}
+.mdListBox view.data-v-7ebf8888:nth-of-type(3) {
+	color: red;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+}
+.mdListBox image.data-v-7ebf8888:nth-of-type(4) {
+	text-align: right;
+	color: #b2b2b2;
+}
+/* .noshadow{
+	hover-class:none
+} */
+

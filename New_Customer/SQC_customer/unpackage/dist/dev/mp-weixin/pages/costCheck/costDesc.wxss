@@ -1,0 +1,117 @@
+
+page {
+	background-color: #f5f5f5;
+}
+.mr20 {
+	margin-right: 20rpx;
+}
+.flex1 {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+}
+.desc-item-count {
+	width: 160rpx;
+	color: #ac8156;
+}
+.costDesc {
+	/* min-height: 80vh; */
+}
+.tar {
+	text-align: right;
+	padding: 20rpx;
+}
+.tar text {
+	color: red;
+}
+.check {
+	margin: 20rpx;
+	background-color: #83cbac !important;
+	color: white !important;
+	height: 80rpx;
+	line-height: 80rpx;
+}
+.checked {
+	background-color: #ccc !important;
+}
+.product {
+	padding: 0 0 20rpx;
+}
+.hide {
+	display: none;
+}
+.desc {
+	margin: 20rpx;
+	background-color: white;
+	border-radius: 10rpx;
+	box-shadow: 7px 7px 7px -7px #bebebe;
+}
+.desc-title {
+	font-size: 40rpx;
+	margin: 0 30rpx;
+	padding: 30rpx 0;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	color: #83cbac;
+}
+.desc-title image {
+	width: 32rpx;
+	height: 32rpx;
+}
+.desc-body {
+	border-top: 1px solid #bebebe;
+	padding: 20rpx 0 0;
+	margin: 0 20rpx;
+}
+.desc-item {
+	margin: 20rpx 0;
+	/* text-indent: 32upx; */
+	text-indent: 20rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+}
+.desc-item .desc-item-title {
+	/* width: 160upx; */
+	color: #83cbac;
+}
+.amount {
+	border-top: 1px solid #bebebe;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+}
+.desc-item-body {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+}
+.desc-item-cc {
+	font-size: 20rpx;
+}
+.cc {
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+

@@ -1,0 +1,29 @@
+
+image.data-v-0adf56dd {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 50rpx;
+}
+.mdListBox.data-v-0adf56dd {
+	padding: 20rpx 50rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	font-size: 50rpx;
+	border-bottom: 1px solid #b2b2b2;
+}
+.mdListBox view.data-v-0adf56dd {
+	width: 25%;
+	text-align: center;
+}
+.mdListBox view.data-v-0adf56dd:nth-of-type(3) {
+	color: red;
+}
+.mdListBox view.data-v-0adf56dd:nth-of-type(4) {
+	text-align: right;
+	color: #b2b2b2;
+}
+

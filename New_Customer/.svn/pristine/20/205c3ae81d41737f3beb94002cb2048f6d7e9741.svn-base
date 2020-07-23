@@ -1,0 +1,21 @@
+
+.StoreNull.data-v-4432318a {
+	text-align: center;
+	font-size: 60rpx;
+	margin-top: 60rpx;
+	color: #a1a1a1;
+}
+.mdListBox.data-v-4432318a {
+	padding: 30rpx;
+	border-bottom: 1px solid #bebebe;
+}
+.mdListBox view.data-v-4432318a:nth-of-type(1) {
+	font-size: 50rpx;
+	color: #83cbac;
+	/* font-weight: bold; */
+}
+.mdListBox view.data-v-4432318a:nth-of-type(2) {
+	margin-top: 10rpx;
+	color: #b2b2b2;
+}
+

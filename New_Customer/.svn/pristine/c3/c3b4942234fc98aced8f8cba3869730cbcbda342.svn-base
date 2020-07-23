@@ -1,0 +1,100 @@
+<template>
+	<view>
+		<image src="../../static/yuyue/logo.jpg" mode=""></image>
+		<view class="box">
+			<view class="boxChidren">
+				<view>门店</view>
+				<navigator url="../mdlist/mdlist" hover-class="no">
+					<view class="mdName">
+						<text>{{ mdname }}</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>护理老师</view>
+				<navigator url="../hlslist/hlslist" hover-class="no">
+					<view class="mdName">
+						<text>{{ hlsname }}</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>时间</view>
+				<navigator url="../yytime/yytime" hover-class="no">
+					<view class="mdName">
+						<text v-if="selecttime != ''">
+							<text>{{ selectdate }}</text>
+							<text style="margin-left: 100upx;">{{ selecttime }}</text>
+						</text>
+						<text v-else>
+							<text>{{ yytime }}</text>
+						</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+
+			<button class="boxChidren" @click="fastYY">马上预约</button>
+		</view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue'
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			mdname: '门店',
+			hlsname: '护理师老师',
+			yytime: '预约时间',
+			selectdate: '',
+			selecttime: ''
+		};
+	},
+	onShow() {
+		this.mdname = this.$mdName;
+		this.hlsname = this.$hlsName;
+		this.selectdate = this.$selectDate;
+		this.selecttime = this.$selectTime;
+	},
+	onLoad() {},
+	methods: {
+		//提交预约
+		fastYY() {
+			console.log(this.$mdId, this.$hlsId, this.$selectDate, this.$selectTime);
+		}
+	}
+};
+</script>
+
+<style scoped>
+.box {
+	margin-top: 10upx;
+	padding: 0 60upx;
+}
+.boxChidren {
+	margin-top: 60upx;
+}
+.mdName {
+	margin-top: 20upx;
+	display: flex;
+	justify-content: space-between;
+	font-size: 40upx;
+	color: #83cbac;
+}
+button {
+	background-color: #83cbac;
+	color: #ffffff;
+	font-weight: bold;
+}
+image {
+	width: 100%;
+	height: 400upx;
+}
+.rArrow{
+	width: 60upx;
+}
+</style>

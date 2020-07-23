@@ -1,0 +1,207 @@
+<template>
+	<view>
+		<view class="logoView">
+			<image :src="imgSrc" mode=""></image>
+			<view class="nameView">
+				<text>{{ userName }}</text>
+				<text>塑青春科技祛痘欢迎您</text>
+			</view>
+		</view>
+		<view class="zhongView">
+			<view class="zhongBox">
+				<view class="zhongViewChild" @click="yyjlClick">
+					<image class="mineImg" src="../../static/tabbarImg/list.png"></image>
+					<text>预约记录</text>
+				</view>
+				<!-- <view class="zhongViewChild">
+					<image class="mineImg" src="../../static/tabbarImg/cost.png"></image>
+					<text>消费确认</text>
+				</view> -->
+				<view class="zhongViewChild" @click="ddjlClick">
+					<image class="mineImg" src="../../static/tabbarImg/register.png"></image>
+					<text>到店记录</text>
+				</view>
+			</view>
+		</view>
+		<view class="xiaView">
+			<view class="xiaViewChild" @click="xxzxqr">
+				<image class="mineImg" src="../../static/tabbarImg/check.png"></image>
+				<text>项目确认</text>
+				<image class="mineImg" src="../../static/tabbarImg/rArrow.png"></image>
+			</view>
+			<!-- <view class="xiaViewChild" @click="callPhone">
+				<image class="mineImg" src="../../static/tabbarImg/phone.png"></image>
+				<text>联系客服</text>
+				<image class="mineImg" src="../../static/tabbarImg/rArrow.png"></image>
+			</view> -->
+		</view>
+		<view class="logout"><button type="default">退出登录</button></view>
+	</view>
+</template>
+
+<script>
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			userName: uni.getStorageSync('UserInfo').nickName,
+			imgSrc: uni.getStorageSync('UserInfo').avatarUrl
+		};
+	},
+	onLoad() {},
+	methods: {
+		// 点击预约记录
+		yyjlClick() {
+			// let data = this.dataList[index].slist;
+			// data['typeUrl']='NewAudit/AuditNursingPerformanceTargetNew'
+			// data = JSON.stringify(data);
+			uni.navigateTo({
+				url: '../yyjl/yyjl'
+			});
+		},
+		ddjlClick() {
+			uni.navigateTo({
+				url: '../ddjl/ddjl'
+			});
+		},
+		xxzxqr(){
+			uni.navigateTo({
+				url: '../check/check'
+			});
+		},
+		callPhone() {
+			uni.makePhoneCall({
+				// 手机号
+				phoneNumber: '17730223771',
+				// 成功回调
+				success: res => {
+					console.log('调用成功!');
+				},
+				// 失败回调
+				fail: res => {
+					console.log('调用失败!');
+				}
+			});
+		}
+	}
+};
+</script>
+
+<style scoped>
+.logoView {
+	display: flex;
+	padding: 30upx 100upx;
+	background-color: #83cbac;
+}
+.logoView image {
+	width: 150upx;
+	height: 150upx;
+	border-radius: 150upx;
+}
+.nameView {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	margin-left: 50upx;
+	color: #ffffff;
+}
+.nameView text:nth-of-type(1) {
+	font-size: 50upx;
+	font-weight: bold;
+}
+.zhongView {
+	background-color: #83cbac;
+	padding: 0 30upx;
+}
+.zhongBox {
+	display: flex;
+	background-color: #ffffff;
+	justify-content: space-around;
+	padding: 50upx;
+}
+.zhongViewChild {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.zhongViewChild text {
+	color: #505050;
+}
+
+.xiaView {
+	margin-top: 50upx;
+	padding: 0 30upx;
+	color: #6c6c6c;
+	min-height: 40vh;
+}
+
+.xiaViewChild {
+	display: flex;
+	align-items: center;
+	padding: 30upx 0;
+	border-bottom: 1px solid #f3f3f3;
+}
+.xiaViewChild text {
+	font-size: 38upx;
+	flex: 1;
+}
+.xiaViewChild image {
+	width: 66upx;
+	height: 66upx;
+	margin-right: 30upx;
+}
+/* //////////////////// */
+.zzc {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 100;
+}
+.header {
+	margin: 90rpx 0 90rpx 50rpx;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+	width: 650rpx;
+	height: 300rpx;
+	line-height: 450rpx;
+}
+
+.header image {
+	width: 200rpx;
+	height: 200rpx;
+}
+
+.content {
+	margin-left: 50rpx;
+	margin-bottom: 90rpx;
+}
+
+.content text {
+	display: block;
+	color: #9d9d9d;
+	margin-top: 40rpx;
+}
+
+.bottom {
+	border-radius: 80rpx;
+	margin: 70rpx 50rpx;
+	font-size: 35rpx;
+}
+.zhongViewChild .mineImg {
+	width: 60upx;
+	height: 60upx;
+}
+.logout {
+	margin: 30upx 0;
+	padding: 0 30upx;
+}
+.logout button {
+	width: 100%;
+	background-color: #83cbac;
+	color: white;
+}
+</style>

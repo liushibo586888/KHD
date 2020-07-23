@@ -1,0 +1,106 @@
+<template>
+	<view>
+		<scroll-view scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in hlsList" :key="index">
+				<navigator url="../yytime/yytime">
+					<view class="mdListBox" @click="selectHLS(index)">
+						<view class="imgView"><image src="../../static/yuyue/logo.jpg" mode="aspectFill"></image></view>
+						<view>{{ item.name }}</view>
+						<view style="font-size: 25upx;">今日已约满</view>
+						<view>></view>
+					</view>
+				</navigator>
+			</block>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0,
+			hlsList: [{ id: '111', name: '陈凤' }, { id: '222', name: '贝贝' }]
+		};
+	},
+	created() {
+		let that = this;
+		that.height = that.getWindowHeight() + 'px';
+	},
+	onLoad() {},
+	methods: {
+		selectHLS(index) {
+			Vue.prototype.$hlsId = this.hlsList[index].id;
+			Vue.prototype.$hlsName = this.hlsList[index].name;
+		},
+		getList(page = 1, size = 15) {
+			let url = 'Performance/GetPractitionerResults';
+			let data = {
+				employeeId: uni.getStorageSync('employeeId'),
+				PageIndex: page,
+				PageSize: size
+			};
+			uni.showLoading({
+				title: '加载中'
+			});
+			api.httpRequestGet(url, data).then(res => {
+				if (res.data.error_code == 'Success') {
+					let jkdata = res.data.data;
+					if (page > 1) {
+						var list = this.dataList;
+						list = list.concat(jkdata.list);
+					} else {
+						var list = [];
+						list = jkdata.list;
+					}
+					this.dataList = list;
+					this.totalPage = jkdata.totalPage;
+					uni.hideLoading();
+				}
+			});
+		},
+		// 下拉加载
+		scrolltolower() {
+			this.PageIndex++;
+			if (this.PageIndex <= this.totalPage) {
+				this.getList(this.PageIndex);
+			} else {
+				uni.showToast({
+					title: '暂无更多数据',
+					duration: 1000
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+image {
+	width: 100upx;
+	height: 100upx;
+	border-radius: 50upx;
+}
+.mdListBox {
+	padding: 20upx 50upx;
+	display: flex;
+	align-items: center;
+	font-size: 50upx;
+	border-bottom: 1px solid #b2b2b2;
+}
+.mdListBox view {
+	width: 25%;
+	text-align: center;
+}
+.mdListBox view:nth-of-type(3) {
+	color: red;
+}
+.mdListBox view:nth-of-type(4) {
+	text-align: right;
+	color: #b2b2b2;
+}
+</style>

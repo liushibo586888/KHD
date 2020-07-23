@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "用户评价",
+  "usingComponents": {
+    "rate": "/components/sx-rate/index"
+  }
+}

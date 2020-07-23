@@ -1,0 +1,255 @@
+<template>
+	<view>
+		<image src="../../static/yuyue/logo.jpg" mode=""></image>
+		<view class="box">
+			<view class="boxChidren">
+				<view>门店</view>
+				<navigator url="../mdlist/mdlist" hover-class="no">
+					<view class="mdName">
+						<text>{{ mdname }}</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>护理老师</view>
+				<navigator url="../hlslist/hlslist" hover-class="no">
+					<view class="mdName">
+						<text>{{ hlsname }}</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>时间</view>
+				<navigator url="../yytime/yytime" hover-class="no">
+					<view class="mdName">
+						<text v-if="selecttime != ''">
+							<text>{{ selectdate }}</text>
+							<text style="margin-left: 100upx;">{{ selecttime }}</text>
+						</text>
+						<text v-else>
+							<text>{{ yytime }}</text>
+						</text>
+						<image class="rArrow" src="../../static/tabbarImg/rArrow.png" mode="widthFix"></image>
+					</view>
+				</navigator>
+			</view>
+
+			<button class="boxChidren" @click="SubmitReserve">马上预约</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	import Vue from 'vue'
+	import api from '../../common/http.js';
+	import schedulTime from '../../common/date.js';
+	export default {
+		data() {
+			return {
+				mdname: '门店',
+				hlsname: '护理老师',
+				yytime: '预约时间',
+				selectdate: '',
+				selecttime: '',
+				timediff: 30, //时间差
+				lockstart: true, //提交预约的锁
+			};
+		},
+		onShow() {
+			this.mdname = this.$mdName;
+			this.hlsname = this.$hlsName;
+			this.selectdate = this.$selectDate;
+			this.selecttime = this.$selectTime;
+		},
+		onLoad() {
+			let p = uni.getStorageSync('schedulparam');
+			if (p == '' || p == null) {
+				this.schedulParam()
+			} else {
+				this.timediff = p.TimeDiff
+			}
+		},
+		methods: {
+			//提交预约
+			SubmitReserve() {
+                //当前代码是发送订阅消息 但是为成功暂时 注释
+				// uni.requestSubscribeMessage({
+				// 	tmplIds: ['MIgrRArxQ_iTwbJqyKf5vS1t83BIGt4yBBisngMvSeE'],
+				// 	success: function(res) { 
+				// 		api.httpRequestGet('NewClient/SendAppletNotice',{}).then(result=>{
+				// 		 console.log(result)
+				// 		})
+				// 	},
+				// 	fail: function(res) { 
+				// 		uni.showToast({
+				// 			title: '订阅消息通知失败',
+				// 			mask: true,
+				// 			duration: 2000,
+				// 			icon: 'none'
+				// 		})
+				// 	}
+				// });
+				// return;
+				uni.showLoading({
+					title: '正在提交预约...',
+					mask: true
+				})
+				//判断预约信息是否填写完整
+				if (this.$mdId == undefined || this.$hlsId == undefined || this.$selectDate == undefined || this.$selectTime ==
+					undefined || this.$selectTime == '') {
+					uni.showToast({
+						title: '预约信息不完整',
+						mask: true,
+						duration: 3000,
+						icon: 'none'
+					})
+					return;
+				}
+				//判断选择的时间段是否正常
+				let n = schedulTime.getNowMinutes(); //当前时间
+				//日期是否为同一天 true 是 
+				var d = schedulTime.getNowFullYear();
+				var isequal = schedulTime.dateIsEqual(d, this.$selectDate)
+				if (isequal) {
+					//计算小时差 大于30分钟才能预约
+					var hour = schedulTime.shortDataDiff(n, this.$selectTime, this.timediff);
+					if (!hour) {
+						this.lockstart = true; //解锁
+						uni.showToast({
+							title: '预约时间小于30分钟,请重新预约',
+							icon: 'none',
+							mask: true,
+							duration: 3000
+						})
+						return;
+					}
+				}
+				//获取缓存中客户id
+				let cust = uni.getStorageSync('customer');
+				if (cust == '' && cust.data.customerId == '' && cust.data.Phone == '' && cust.data.openid == '') {
+					uni.showToast({
+						title: '当前登录信息有误,请重新登录账号预约',
+						mask: true,
+						duration: 3000
+					})
+					return;
+				}
+
+				if (!this.lockstart) {
+					uni.showToast({
+						title: '不要频繁提交预约哦',
+						mask: true,
+						duration: 3000
+					})
+					return;
+				}
+				this.lockstart = false; //提交后锁上
+
+				let param = {
+					EmployeeId: this.$hlsId,
+					StoreId: this.$mdId,
+					phone: cust.data.Phone,
+					Date: this.$selectDate + ' ' + this.$selectTime
+				}
+				api.httpRequestGet('CustomerReserva/ExistReserve', param).then(res => {
+					let r = res.data;
+					//查询是否已有预约如果当前时间没有被预约直接可以提交数据
+					if (r.error_code == "Success") {
+						api.httpRequestPost('CustomerReserva/ConfirmSubmit', param).then(result => {
+							//预约提交返回信息
+							if (result.errMsg == "request:fail timeout") {
+								this.lockstart = true; //解锁
+								uni.showToast({
+									title: '预约信息提交超时,稍等片刻在提交',
+									icon: 'none',
+									duration: 3000
+								})
+								return
+							}
+							//预约提交成功
+							else if (result.data.error_code == 'Success') {
+								uni.showToast({
+									title: result.data.error_message,
+									icon: 'none',
+									duration: 3000
+								})
+								this.selectdate = '';
+								this.selecttime = '';
+								Vue.prototype.$selectDate = undefined;
+								Vue.prototype.$selectTime = undefined;
+								Vue.prototype.$timeIndex = undefined;
+								Vue.prototype.$current = undefined;
+
+							} else {
+								uni.showToast({
+									title: result.data.error_message,
+									icon: 'none',
+									duration: 3000
+								})
+							}
+							this.lockstart = true; //解锁
+							setTimeout(function() {
+								uni.hideLoading()
+							}, 1000);
+
+						})
+					} else {
+						this.lockstart = true; //解锁
+						uni.showToast({
+							title: r.error_message,
+							mask: true,
+							icon: 'none',
+							duration: 3000
+						})
+						return;
+					}
+				})
+
+			},
+			//排班的参数
+			schedulParam() {
+				api.httpRequestGet('CustomerReserva/SetSchedulInfo', {}).then(res => {
+					let d = res.data.data;
+					uni.setStorageSync('schedulparam', d);
+					this.timediff = d.TimeDiff;
+				})
+			},
+		}
+	};
+</script>
+
+<style scoped>
+	.box {
+		margin-top: 10upx;
+		padding: 0 60upx;
+	}
+
+	.boxChidren {
+		margin-top: 60upx;
+	}
+
+	.mdName {
+		margin-top: 20upx;
+		display: flex;
+		justify-content: space-between;
+		font-size: 40upx;
+		color: #83cbac;
+	}
+
+	button {
+		background-color: #83cbac;
+		color: #ffffff;
+		font-weight: bold;
+	}
+
+	image {
+		width: 100%;
+		height: 400upx;
+	}
+
+	.rArrow {
+		width: 60upx;
+	}
+</style>

@@ -1,0 +1,55 @@
+
+.box.data-v-14903da1 {
+	padding: 30rpx;
+}
+scroll-view.data-v-14903da1 {
+	padding: 20rpx 0;
+	width: 100%;
+	white-space: nowrap;
+}
+.dayTitle.data-v-14903da1 {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 120rpx;
+	margin-left: 20rpx;
+	text-align: center;
+	display: inline-block;
+	padding-top: 20rpx;
+}
+.select.data-v-14903da1 {
+	color: #ffffff;
+	background-color: #88c36a;
+}
+.timeItem.data-v-14903da1 {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	        flex-wrap: wrap;
+}
+.timechild.data-v-14903da1 {
+	padding: 20rpx 30rpx;
+	background-color: #dedede;
+	color: #999999;
+	border-radius: 5rpx;
+	margin: 15rpx;
+}
+.tabselected.data-v-14903da1 {
+	color: #ffffff;
+	/* font-weight: bold; */
+	background-color: #88c36a;
+}
+.btn.data-v-14903da1 {
+	width: 100%;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+}
+.notstop.data-v-14903da1 {
+	background-color: #88c36a;
+	color: #ffffff;
+}
+button.data-v-14903da1 {
+	font-weight: 550;
+}
+

@@ -1,0 +1,70 @@
+<template>
+	<view>
+		<view v-if="mdList.length<=0 ? true:false" class="StoreNull">暂无门店</view>
+		<scroll-view v-else="mdList.length == 0 ? false : true" scroll-y="true" :style="{ height: height }" style="padding: 10upx 0;" @scrolltolower="scrolltolower">
+			<block v-for="(item, index) in mdList" :key="index">
+				<view class="mdListBox" @click="mdselect(index)">
+					<view>{{ item.StoreName }}</view>
+					<view>{{ item.Address }}</view>
+				</view>
+			</block>
+		</scroll-view> 
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			height: '500upx',
+			PageIndex: 1,
+			totalPage: 0,
+			mdList: null
+		};
+	},
+	created() {
+		let that = this;
+		that.height = that.getWindowHeight() + 'px';
+		this.getList();
+	},
+	onLoad() {},
+	methods: {
+		// 选择门店
+		mdselect(index) {
+			Vue.prototype.$mdId = this.mdList[index].StoreId;
+			Vue.prototype.$mdName = this.mdList[index].StoreName;
+			uni.switchTab({
+				url: '../index/index'
+			});
+		},
+		// 获取门店列表
+		getList() {
+			this.mdList = uni.getStorageSync('customer').data.Stores;
+		}
+	}
+};
+</script>
+
+<style scoped>
+.StoreNull {
+	text-align: center;
+	font-size: 60rpx;
+	margin-top: 60rpx;
+	color: #a1a1a1;
+}
+.mdListBox {
+	padding: 30upx;
+	border-bottom: 1px solid #bebebe;
+}
+.mdListBox view:nth-of-type(1) {
+	font-size: 50upx;
+	color: #83cbac;
+	/* font-weight: bold; */
+}
+.mdListBox view:nth-of-type(2) {
+	margin-top: 10upx;
+	color: #b2b2b2;
+}
+</style>

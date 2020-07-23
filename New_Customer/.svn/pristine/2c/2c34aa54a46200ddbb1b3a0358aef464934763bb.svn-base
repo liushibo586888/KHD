@@ -1,0 +1,97 @@
+<template>
+	<view>
+		<image src="../../static/yuyue/logo.jpg" mode=""></image>
+		<view class="box">
+			<view>
+				<view>门店</view>
+				<navigator url="../mdlist/mdlist">
+					<view class="mdName">
+						<text>{{ mdname }}</text>
+						<text>></text>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>美容师</view>
+				<navigator url="../hlslist/hlslist">
+					<view class="mdName">
+						<text>{{ hlsname }}</text>
+						<text>></text>
+					</view>
+				</navigator>
+			</view>
+			<view class="boxChidren">
+				<view>时间</view>
+				<navigator url="../yytime/yytime">
+					<view class="mdName">
+						<text v-if="selecttime != ''">
+							<text>{{ selectdate }}</text>
+							<text style="margin-left: 100upx;">{{ selecttime }}</text>
+						</text>
+						<text v-else>
+							<text>{{ yytime }}</text>
+						</text>
+						<text>></text>
+					</view>
+				</navigator>
+			</view>
+
+			<button class="boxChidren" @click="fastYY">马上预约</button>
+		</view>
+	</view>
+</template>
+
+<script>
+import Vue from 'vue';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			mdname: '请选择门店',
+			hlsname: '请选择美容师',
+			yytime: '请选择预约时间',
+			selectdate: '',
+			selecttime: ''
+		};
+	},
+	onShow() {
+		this.mdname = this.$mdName;
+		this.hlsname = this.$hlsName;
+		this.selectdate = this.$selectDate;
+		this.selecttime = this.$selectTime;
+	},
+	onLoad() {},
+	methods: {
+		//提交预约
+		fastYY() {
+			console.log(this.$mdId, this.$hlsId, this.$selectDate, this.$selectTime);
+		}
+	}
+};
+</script>
+
+<style scoped>
+.box {
+	margin-top: 10upx;
+	padding: 0 60upx;
+}
+.boxChidren {
+	margin-top: 100upx;
+}
+.mdName {
+	margin-top: 20upx;
+	display: flex;
+	justify-content: space-between;
+	font-size: 50upx;
+	color: #88c36a;
+}
+button {
+	background-color: #88c36a;
+	color: #ffffff;
+	font-weight: bold;
+}
+image {
+	width: 100%;
+	height: 400upx;
+}
+</style>

@@ -1,0 +1,292 @@
+<template>
+	<view>
+		<view class="avatar">
+			<view class="logo"><image src="../../static/yuyue/logo.jpg" mode="aspectFill"></image></view>
+			<view class="hlsDesc">
+				<view>
+					<text class="left">护理师：</text>
+					<text class="right">{{ info.name }}</text>
+				</view>
+				<view>
+					<text class="left">美肤总监：</text>
+					<text class="right">{{ info.eN }}</text>
+				</view>
+				<view>
+					<text class="left">护理时间：</text>
+					<text class="right">{{ timeFormat(info.time) }}</text>
+				</view>
+			</view>
+		</view>
+		<view class="evaluate">
+			<view class="eva-title"><text>请给本次服务做个评价</text></view>
+			<view class="eva-question" v-for="item in question" :key="item.ID">
+				<view class="eva-question-title">
+					{{ item.Name }}
+					<!-- 	<text class="manner" v-if="item.Score == 0">要哭了</text>
+					<text class="manner" v-else-if="item.Score == 1">差</text>
+					<text class="manner" v-else-if="item.Score == 2">较差</text>
+					<text class="manner" v-else-if="item.Score == 3">一般</text>
+					<text class="manner" v-else-if="item.Score == 4">满意</text>
+					<text class="manner" v-else-if="item.Score == 5">真棒</text> -->
+				</view>
+				<rate :disabled="change == 2 ? true : false" fontSize="50rpx" :value.sync="item.Score"></rate>
+				<!-- <rate :disabled="change == 2 ? true : false" size="18" margin="10" :value="item.Score"></rate> -->
+			</view>
+		</view>
+		<view class="richText">
+			<view v-if="change == 0">
+				<view>评价内容</view>
+				<textarea maxlength="200" v-model="valuation" placeholder="您的评价会让我们更好" />
+			</view>
+			<view v-else v-for="(item, i) in valuation" :key="i">
+				<view>{{ i == 0 ? '评价内容' : '追加评价' }}</view>
+				<textarea class="borderNone" maxlength="200" :disabled="change == 0 ? false : true" v-model="item.Text" placeholder="您的评价会让我们更好" />
+			</view>
+			<view v-show="change != 0">
+				<view>追加评价</view>
+				<textarea maxlength="200" v-model="putEvaluateText" placeholder="您的评价会让我们更好" />
+			</view>
+		</view>
+		<button type="default" v-if="change == 0" @click="submitEvaluate" class="btn">提交</button>
+		<button type="default" v-else @click="putEvaluate" class="btn">追加评论</button>
+	</view>
+</template>
+
+<script>
+import rate from '@/components/sx-rate';
+// import rate from '@/components/wyc-rate/uni-rate';
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			change: 0,
+			info: {},
+			question: {},
+			valuation: [],
+			putEvaluateText: ''
+		};
+	},
+	methods: {
+		putEvaluate() {
+			if (this.putEvaluateText == '' || this.putEvaluateText.replace(/^\s\s*/, '').replace(/\s\s*$/, '') == '') {
+				uni.showModal({
+					title: '',
+					content: '追评内容不能为空',
+					showCancel: false
+				});
+				return false;
+			}
+			uni.showLoading({
+				title: '正在提交...',
+				mask: true
+			});
+			api.httpRequestGet('Complaints/AppendAdd', { ExcuteRecordID: this.info.id, Contents: this.putEvaluateText }).then(res => {
+				uni.showToast({
+					icon: 'success',
+					title: '感谢您的评价',
+					duration: 1000,
+					mask: true
+				});
+				setTimeout(() => {
+					uni.navigateBack({
+						delta: 1
+					});
+					uni.hideLoading();
+				}, 1000);
+			});
+		},
+		submitEvaluate() {
+			if (this.valuation == '' || this.valuation.replace(/^\s\s*/, '').replace(/\s\s*$/, '') == '') {
+				// uni.showModal({
+				// 	title: '',
+				// 	content: '评价内容不能为空',
+				// 	showCancel: false
+				// });
+				// return false
+				this.valuation = ''; //内容没有写的话，默认为空
+			}
+			uni.showLoading({
+				title: '正在提交...',
+				mask: true
+			});
+			let CustomerID = uni.getStorageSync('customer').data.CustomerID;
+			api.httpRequestPost('Complaints/Add', {
+				CustomerID,
+				StoreInfoID: this.info.StoreID,
+				ExcuteRecordID: this.info.id,
+				EmployeeID: this.info.BTID,
+				Contents: this.valuation,
+				listTags: JSON.stringify(this.question)
+			}).then(res => {
+				uni.showToast({
+					icon: 'success',
+					title: '感谢您的评价',
+					duration: 1000,
+					mask: true
+				});
+				setTimeout(() => {
+					uni.$emit('change', { index: this.info.index });
+					uni.navigateBack({
+						delta: 1
+					});
+					uni.hideLoading();
+				}, 1000);
+			});
+		},
+		timeFormat(time) {
+			if (time) {
+				let arrTime = time.split(/[-T.]/);
+				// console.log(arrTime);
+				return arrTime[0] + '-' + arrTime[1] + '-' + arrTime[2];
+			}
+		},
+		getInfo() {
+			this.info = uni.getStorageSync('check');
+			// console.log(this.info);
+			this.getList();
+		},
+		getList() {
+			if (this.info.ES == 0) {
+				let evaluatelist = uni.getStorageSync('evaluate');
+				if (evaluatelist != '' && evaluatelist != null && evaluatelist.length > 0) {
+					this.question = uni.getStorageSync('evaluate');
+				} else {
+					//重新请求
+					api.httpRequestGet('Complaints/Evaluate').then(res => {
+						if (res.data.error_code == 'Success') {
+							this.question = res.data.data;
+							uni.setStorageSync('evaluate', res.data.data);
+						}
+					});
+				}
+			} else {
+				this.change = 2;
+				api.httpRequestGet('Complaints/QueryComment', { ExcuteRecordID: this.info.id }).then(res => {
+					this.question = res.data.data.ListTag;
+					this.valuation = res.data.data.ListComment;
+					// console.log(res.data.data);
+				});
+			}
+		}
+	},
+	computed: {},
+	onLoad() {
+		let cust = uni.getStorageSync('customer');
+		if (cust == null || cust.data == undefined || cust.data.CustomerID == null) {
+			uni.reLaunch({
+				url: '../login/login'
+			});
+		}
+		this.getInfo();
+	},
+	components: {
+		rate
+	}
+};
+</script>
+
+<style>
+.manner {
+	position: absolute;
+	right: 50upx;
+	bottom: 14upx;
+	color: #83cbac;
+	font-size: 28upx;
+}
+.hlsDesc > view {
+	display: flex;
+	color: #999;
+}
+.left {
+	width: 200upx;
+	color: #83cbac;
+}
+.richText {
+	padding: 30upx 50upx;
+	/* min-height: 50%; */
+}
+.richText textarea {
+	border: 1px solid #f5f5f5;
+	border-radius: 4upx;
+	width: 100%;
+	margin: 20upx 0;
+	height: 136upx;
+}
+
+.richText .borderNone {
+	border: none;
+}
+.btn {
+	color: white !important;
+	background-color: #83cbac !important;
+	margin: 0 50rpx 20rpx;
+	height: 100upx;
+	line-height: 100upx;
+	border: none;
+	/* position: sticky; 
+	 bottom: 0; */
+}
+.eva-question-title {
+	/* margin-bottom: 15upx; */
+	font-size: 28rpx;
+}
+
+.eva-question {
+	position: relative;
+	padding: 20upx 50upx;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	/* flex-direction: column; */
+	justify-content: space-between;
+}
+.uni-rate {
+	margin-left: -60upx;
+}
+.eva-title {
+	color: #83cbac;
+	text-align: center;
+	margin: 30upx 0;
+}
+.eva-title text {
+	position: relative;
+}
+.eva-title text::before,
+.eva-title text::after {
+	content: '';
+	position: absolute;
+	width: 50upx;
+	height: 2upx;
+	top: 50%;
+	background-color: #83cbac;
+}
+.eva-title text::before {
+	left: -60upx;
+}
+.eva-title text::after {
+	right: -60upx;
+}
+.avatar {
+	display: flex;
+	padding: 30upx 20upx;
+	border-bottom: 1px solid #f5f5f5;
+}
+.avatar image {
+	width: 150upx;
+	height: 150upx;
+	border-radius: 1000upx;
+}
+.avatar .logo,
+.avatar .hlsDesc {
+	display: flex;
+	justify-content: center;
+}
+.avatar .logo {
+	flex: 4;
+	align-items: center;
+}
+.avatar .hlsDesc {
+	flex: 7;
+	flex-direction: column;
+}
+</style>

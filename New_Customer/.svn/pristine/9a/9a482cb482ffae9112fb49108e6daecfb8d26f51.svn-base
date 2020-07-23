@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/mine/mine",
+    "pages/ddjl/ddjl",
+    "pages/yyjl/yyjl",
+    "pages/login/phonelogin",
+    "pages/index/index",
+    "pages/mdlist/mdlist",
+    "pages/hlslist/hlslist",
+    "pages/yytime/yytime",
+    "pages/check/check"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "至美塑青春",
+    "navigationBarBackgroundColor": "#83cbac",
+    "backgroundColor": "#83cbac"
+  },
+  "tabBar": {
+    "color": "#cdcdcd",
+    "selectedColor": "#83cbac",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabbarImg/sy.png",
+        "selectedIconPath": "static/tabbarImg/syS.png",
+        "text": "预约"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "static/tabbarImg/wode.png",
+        "selectedIconPath": "static/tabbarImg/wodeS.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

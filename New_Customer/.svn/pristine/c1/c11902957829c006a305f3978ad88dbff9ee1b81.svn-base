@@ -1,0 +1,15 @@
+
+.mdListBox.data-v-363acca1 {
+	padding: 30rpx;
+	border-bottom: 1px solid #bebebe;
+}
+.mdListBox view.data-v-363acca1:nth-of-type(1) {
+	font-size: 50rpx;
+	color: #88c36a;
+	/* font-weight: bold; */
+}
+.mdListBox view.data-v-363acca1:nth-of-type(2) {
+	margin-top: 10rpx;
+	color: #b2b2b2;
+}
+

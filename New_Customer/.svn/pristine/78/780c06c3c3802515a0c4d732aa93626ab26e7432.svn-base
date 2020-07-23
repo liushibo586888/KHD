@@ -1,0 +1,213 @@
+<template>
+	<view>
+		<view class="costDesc">
+			<view class="desc" v-for="(item, index) in info" :key="index">
+				<view class="desc-title">
+					{{ item.Title }}
+					<!-- <image mode="widthFix" @click="toggle(index)" :src="item.toggleFold ? '../../static/up.png' : '../../static/down.png'"></image> -->
+				</view>
+				<view :class="item.toggleFold ? 'desc-body' : 'desc-body hide'" v-for="(ite, ind) in info[index].models" :key="ind">
+					<view class="product">
+						<view class="desc-item">
+							<text class="desc-item-title">名称：</text>
+							{{ ite.ProductName }}
+						</view>
+						<view class="desc-item">
+							<text class="desc-item-title">价格：</text>
+							{{ ite.Pirce }}
+						</view>
+						<view class="desc-item">
+							<text class="desc-item-title">分类：</text>
+							{{ ite.CategoryName }}
+						</view>
+					</view>
+					<view class="amount" v-for="(it, i) in info[index].models[ind].Details" :key="i">
+						<view class="desc-item cc">
+							<text style="display: none;">{{ it.Amount }}</text>
+							<text class="desc-item-title">金额：</text>
+							{{ it.Amount }}
+							<text class="desc-item-cc">{{ it.PayModelName }}</text>
+							<text class="desc-item-cc">经手人：{{ it.HandlebyName }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="">
+			<view class="desc tar">
+				合计：
+				<text>{{ count }}</text>
+			</view>
+			<button v-if="Confirm == 1" disabled="false" type="default" class="check checked">已确认</button>
+			<button v-else type="default" @click="check" class="check">本人确认</button>
+		</view>
+	</view>
+</template>
+
+<script>
+import api from '../../common/http.js';
+export default {
+	data() {
+		return {
+			info: {},
+			i: '',
+			ConsumptionInfoID: '',
+			count: '',
+			Confirm: null
+		};
+	},
+	methods: {
+		check() {
+			let CustomerID = uni.getStorageSync('customer').data.CustomerID;
+			let data = {
+				CustomerID,
+				ConsumptionInfoID: this.ConsumptionInfoID
+			};
+			let _this = this;
+			api.httpRequestPost('NewClient/ConsumptionConfirm', data).then(res => {
+				console.log(data, res.data);
+				if (res.data.error_code == 'Success') {
+					uni.showModal({
+						title: '提示',
+						content: '是否确认',
+						success(res) {
+							if (res.confirm) {
+								uni.showToast({
+									icon: 'success',
+									title: '消费确认成功',
+									duration: 2000,
+									mask: true
+								});
+								setTimeout(() => {
+									uni.$emit('costCheck', { index: _this.i });
+									uni.navigateBack({
+										delta: 1
+									});
+								}, 2000);
+							}
+						}
+					});
+				}
+			});
+		},
+		toggle(i) {
+			this.info[i].toggleFold = !this.info[i].toggleFold;
+			console.log(this.info, this.info[i].toggleFold);
+			// if (this.toggleFold != i) {
+			// 	this.toggleFold = i;
+			// 	console.log(true, i, this.toggleFold);
+			// } else {
+			// 	this.toggleFold = -1;
+			// 	console.log(false, i, this.toggleFold);
+			// }
+		}
+	},
+	async onLoad(e) {
+		// console.log(e.id);
+		this.ConsumptionInfoID = e.id;
+		this.i = e.i;
+		let res = await api.httpRequestGet('NewClient/CustConsumptionDetails', {
+			ConsumptionInfoID: e.id
+		});
+		this.Confirm = e.Confirm;
+
+		this.info = res.data.data;
+		this.info.forEach((v, i) => {
+			this.info[i].toggleFold = true;
+		});
+
+		// console.log(this.info);
+
+		this.info.forEach(v => {
+			v.models.forEach(i => {
+				i.Details.forEach(a => {
+					this.count += a.Amount;
+				});
+			});
+		});
+	}
+};
+</script>
+
+<style>
+page {
+	background-color: #f5f5f5;
+}
+.costDesc {
+	/* min-height: 80vh; */
+}
+.tar {
+	text-align: right;
+	padding: 20upx;
+}
+.tar text {
+	color: red;
+}
+.check {
+	margin: 20upx;
+	background-color: #83cbac !important;
+	color: white !important;
+	height: 80upx;
+	line-height: 80upx;
+}
+.checked {
+	background-color: #ccc !important;
+}
+.product {
+	padding: 0 0 20upx;
+}
+.hide {
+	display: none;
+}
+
+.desc {
+	margin: 20upx;
+	background-color: white;
+	border-radius: 10upx;
+	box-shadow: 7px 7px 7px -7px #bebebe;
+}
+.desc-title {
+	font-size: 40upx;
+	margin: 0 30upx;
+	padding: 30upx 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #83cbac;
+}
+.desc-title image {
+	width: 32upx;
+	height: 32upx;
+}
+.desc-body {
+	border-top: 1px solid #bebebe;
+	padding: 20upx 0;
+	margin: 0 20upx;
+}
+.desc-item {
+	margin: 20upx 0;
+	text-indent: 32upx;
+	display: flex;
+}
+.desc-item .desc-item-title {
+	width: 160upx;
+	color: #83cbac;
+}
+.amount {
+	border-top: 1px solid #bebebe;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.desc-item-body {
+	flex: 1;
+	display: flex;
+	justify-content: space-between;
+}
+.desc-item-cc {
+	font-size: 20upx;
+}
+.cc {
+	align-items: center;
+}
+</style>
