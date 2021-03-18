@@ -65,7 +65,7 @@ export default {
 		this.hlsname = this.$hlsName;
 		this.selectdate = this.$selectDate;
 		this.selecttime = this.$selectTime;  
-		this.QueryCustBaseInfo();   
+		this.QueryCustBaseInfo();  
 	},
 	onLoad() {
 		let cust = uni.getStorageSync('customer');
@@ -204,66 +204,42 @@ export default {
 				uni.setStorageSync('schedulparam', d);
 				this.timediff = d.TimeDiff;
 			});
-		}, 
+		},
 		//预约页面重新查询客户门店 护理师 信息
 		QueryCustBaseInfo() {
 			let _this = this;
 			let d = uni.getStorageSync('customer'); 
 			if (d != null && d.data != undefined && d.data.CustomerID != null && d.data.Phone != null && d.data.OpenID != null) {
 				let cust = d.data;
-				//查询客户是否未有确认的项目
-				 api.httpRequestGet('NewClient/CustNotExcute',{
-					 CustomerID:d.data.CustomerID
-				 }).then(result=>{
-					 var num = result.data.data;
-					 if(num>0){
-						 uni.showModal({
-							 title:'项目确认',
-							 content:'请先去确认您的上次护理项目信息',
-							 showCancel:false,
-							 success: (res) => {
-								 uni.navigateTo({
-								 	url:'../check/check'
-								 })
-								 // if(res.confirm){} 
-							 }
-						 });
-					 }
-					 else //直接显示护理师
-					 {
-						 //显示需要预约的护理师
-						 api.httpRequestGet('NewClient/CustomerPhoneNumber', {
-						 	openid: cust.OpenID,
-						 	phone: cust.Phone
-						 }).then(result => {
-						 	let res = result.data;
-						 	if (res.error_code == 'Success') {
-						 		 uni.setStorageSync('customer', res);
-						 		if(res.data.StoreName!=null&&res.data.Name!=null)
-						 		 { 
-						 			 _this.mdname = res.data.StoreName;
-						 			 _this.hlsname = res.data.Name;
-						 			 Vue.prototype.$hlsId = res.data.ID;
-						 			 Vue.prototype.$mdId = res.data.StoreId;   
-						 		 }
-						 		 
-						 	} else {
-						 		uni.showToast({
-						 			title: '请求失败',
-						 			mask: true,
-						 			icon: 'none',
-						 			duration: 2000
-						 		}); 
-						 		// setTimeout(function() {
-						 		// 	uni.reLaunch({
-						 		// 		url: '../login/login'
-						 		// 	});
-						 		// }, 500);
-						 	} 
-						 });
-					 }
-				 });
-				 
+				api.httpRequestGet('NewClient/CustomerPhoneNumber', {
+					openid: cust.OpenID,
+					phone: cust.Phone
+				}).then(result => {
+					let res = result.data;
+					if (res.error_code == 'Success') {
+						 uni.setStorageSync('customer', res);
+						if(res.data.StoreName!=null&&res.data.Name!=null)
+						 { 
+							 _this.mdname = res.data.StoreName;
+							 _this.hlsname = res.data.Name;
+							 Vue.prototype.$hlsId = res.data.ID;
+							 Vue.prototype.$mdId = res.data.StoreId;   
+						 }
+						 
+					} else {
+						uni.showToast({
+							title: '请求失败',
+							mask: true,
+							icon: 'none',
+							duration: 2000
+						}); 
+						// setTimeout(function() {
+						// 	uni.reLaunch({
+						// 		url: '../login/login'
+						// 	});
+						// }, 500);
+					} 
+				});
 			} else {
 				uni.showToast({
 					title: '登录已过期,请重新登录',

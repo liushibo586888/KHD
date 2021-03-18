@@ -153,7 +153,8 @@ export default {
 				title: '加载中',
 				mask: true
 			});
-			api.httpRequestGet(url, data).then(res => { 
+			api.httpRequestGet(url, data).then(res => {
+				console.log(res)
 				if (res.data.error_code == 'Success') {
 					let jkdata = res.data.data;
 					this.ImgPath(jkdata.list);

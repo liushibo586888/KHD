@@ -1,6 +1,5 @@
 <template>
 	<view>
-		<uni-notice-bar showIcon="true" scrollable="true" single="true" :text="newsContent" @click="noticClick" v-if="status"></uni-notice-bar>
 		<view class="logoView">
 			<image :src="imgSrc" mode="widthFix"></image>
 			<view class="nameView">
@@ -41,8 +40,8 @@
 				<image class="mineImg" src="../../static/tabbarImg/chain.png"></image>
 				<text>门店详情</text>
 				<image class="mineImg" src="../../static/tabbarImg/rArrow.png"></image>
-			</navigator>
-
+			</navigator>		
+			
 			<navigator hover-class="none" class="xiaViewChild" url="../setting/setting">
 				<image class="mineImg" src="../../static/tabbarImg/setting.png"></image>
 				<text>设置</text>
@@ -55,14 +54,9 @@
 <script>
 import Vue from 'vue';
 import api from '../../common/http.js';
-import uniNoticeBar from '@/components/uni-notice-bar/uni-notice-bar.vue';
 export default {
-	components: { uniNoticeBar },
 	data() {
 		return {
-			textTitle: '',
-			newsContent: '',
-			status: 0,
 			userName: uni.getStorageSync('UserInfo').nickName,
 			imgSrc: uni.getStorageSync('UserInfo').avatarUrl,
 			redPoint: 0,
@@ -73,7 +67,6 @@ export default {
 	onShow() {
 		uni.hideHomeButton();
 		this.getRedPoint(); //获取执行项目未确认的数字
-		this.getNewsNotice();
 	},
 	created() {
 		const updateManager = uni.getUpdateManager();
@@ -117,6 +110,7 @@ export default {
 		Vue.prototype.$hlsName = '护理老师';
 		Vue.prototype.$selectDate = '';
 		Vue.prototype.$selectTime = '';
+
 		// this.$loginBol 是否是重新授权过来 如果是this.$loginBol值为true 否则是undefined
 		if (this.$loginBol == undefined) {
 			uni.showLoading({
@@ -183,13 +177,6 @@ export default {
 		this.getEvaluate(); //获取评价内容
 	},
 	methods: {
-		noticClick() {
-			uni.showModal({
-				title: this.textTitle,
-				content: this.newsContent,
-				showCancel: false
-			});
-		},
 		subscribe() {
 			uni.requestSubscribeMessage({
 				tmplIds: ['HLASxqUGFHt4ajy69Yb32hm_0kl80pGzdj_MastQ4x4', 'Vqg_Jt1y8og1BctQ1Ho1QSD9QGbWkT0tiG35aVIO-R8', 'mFZ2vrY2IlyDDnu6sDT98k_Xu6AY5Q3o9c-di3LuT_A'],
@@ -218,17 +205,6 @@ export default {
 			api.httpRequestGet('Complaints/Evaluate').then(res => {
 				if (res.data.error_code == 'Success') {
 					uni.setStorageSync('evaluate', res.data.data);
-				}
-			});
-		},
-		//获取消息提醒
-		getNewsNotice() {
-			api.httpRequestGet('NewClient/CustNotice').then(res => {
-				if (res.data.error_code == 'Success') {
-					let resData = res.data.data;
-					this.textTitle = resData.title;
-					this.status = resData.status;
-					this.newsContent = resData.content;
 				}
 			});
 		},
